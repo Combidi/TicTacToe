@@ -11,11 +11,11 @@ enum Sign {
 struct Board {
     
     enum Row: Int {
-        case one = 0, two
+        case one = 0, two, three
     }
     
     enum Col: Int {
-        case one = 0, two
+        case one = 0, two, three
     }
     
     var state: [[Sign?]] = [
@@ -64,5 +64,15 @@ final class BoardTests: XCTestCase {
         ]
 
         XCTAssertEqual(secondMove.state, expectedStateAfterSecondMove)
+        
+        let thirdMove = secondMove.mark(row: .three, col: .three, withSign: .x)
+        
+        let expectedStateAfterThirdMove: [[Sign?]] = [
+            [.none, .x, .none],
+            [.o, .none, .none],
+            [.none, .none, .x]
+        ]
+
+        XCTAssertEqual(thirdMove.state, expectedStateAfterThirdMove)
     }
 }
