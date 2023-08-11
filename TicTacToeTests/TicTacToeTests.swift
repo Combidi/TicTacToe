@@ -15,9 +15,6 @@ struct TicTacToe {
 final class TicTacToeTests: XCTestCase {
 
     func test_startsWithEmptyBoard() {
-        
-        let game = TicTacToe()
-        
         XCTAssertEqual(TicTacToe().state, [
             [.none, .none, .none],
             [.none, .none, .none],
