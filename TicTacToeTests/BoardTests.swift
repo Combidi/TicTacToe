@@ -5,17 +5,17 @@
 import XCTest
 
 enum Sign {
-    case x
+    case x, o
 }
 
 struct Board {
     
-    enum Row {
-        case one
+    enum Row: Int {
+        case one = 0, two
     }
     
-    enum Col {
-        case two
+    enum Col: Int {
+        case one = 0, two
     }
     
     var state: [[Sign?]] = [
@@ -26,7 +26,7 @@ struct Board {
     
     func mark(row: Row, col: Col, withSign sign: Sign) -> Board {
         var copy = state
-        copy[0][1] = .x
+        copy[row.rawValue][col.rawValue] = sign
         return Board(state: copy)
     }
 }
@@ -45,14 +45,24 @@ final class BoardTests: XCTestCase {
         
         let board = Board()
         
-        let newState = board.mark(row: .one, col: .two, withSign: .x)
+        let firstMove = board.mark(row: .one, col: .two, withSign: .x)
      
-        let expectedState: [[Sign?]] = [
+        let expectedStateAfterFirstMove: [[Sign?]] = [
             [.none, .x, .none],
             [.none, .none, .none],
             [.none, .none, .none]
         ]
         
-        XCTAssertEqual(newState.state, expectedState)
+        XCTAssertEqual(firstMove.state, expectedStateAfterFirstMove)
+        
+        let secondMove = firstMove.mark(row: .two, col: .one, withSign: .o)
+
+        let expectedStateAfterSecondMove: [[Sign?]] = [
+            [.none, .x, .none],
+            [.o, .none, .none],
+            [.none, .none, .none]
+        ]
+
+        XCTAssertEqual(secondMove.state, expectedStateAfterSecondMove)
     }
 }
