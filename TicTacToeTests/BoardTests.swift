@@ -4,7 +4,7 @@
 
 import XCTest
 
-struct TicTacToe {
+struct Board {
     let state: [[Bool?]] = [
         [.none, .none, .none],
         [.none, .none, .none],
@@ -12,10 +12,10 @@ struct TicTacToe {
     ]
 }
 
-final class TicTacToeTests: XCTestCase {
+final class BoardTests: XCTestCase {
 
     func test_startsWithEmptyBoard() {
-        XCTAssertEqual(TicTacToe().state, [
+        XCTAssertEqual(Board().state, [
             [.none, .none, .none],
             [.none, .none, .none],
             [.none, .none, .none]
