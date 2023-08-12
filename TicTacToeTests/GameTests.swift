@@ -20,7 +20,7 @@ struct Game {
 
 final class GameTests: XCTestCase {
     
-    func test() {
+    func test_startsGameForPlayerO() {
         let game = Game()
         
         let turn1 = game.start()
