@@ -18,11 +18,19 @@ struct Board {
         case one = 0, two, three
     }
     
-    var state: [[Sign?]] = [
-        [.none, .none, .none],
-        [.none, .none, .none],
-        [.none, .none, .none]
-    ]
+    init() {
+        state = [
+            [.none, .none, .none],
+            [.none, .none, .none],
+            [.none, .none, .none]
+        ]
+    }
+    
+    private init(state: [[Sign?]]) {
+        self.state = state
+    }
+    
+    let state: [[Sign?]]
     
     func mark(row: Row, col: Col, withSign sign: Sign) -> Board {
         var copy = state
