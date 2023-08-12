@@ -8,16 +8,16 @@ enum Sign {
     case x, o
 }
 
+enum Row: Int {
+    case one = 0, two, three
+}
+
+enum Col: Int {
+    case one = 0, two, three
+}
+
 struct Board {
-    
-    enum Row: Int {
-        case one = 0, two, three
-    }
-    
-    enum Col: Int {
-        case one = 0, two, three
-    }
-    
+        
     init() {
         state = [
             [.none, .none, .none],
