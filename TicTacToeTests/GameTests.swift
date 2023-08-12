@@ -30,13 +30,17 @@ struct Game {
         let emptyBoard = Board()
         onBoardStateChange(emptyBoard)
         return Turn(player: .o, _mark: { row, col in
-            let boardAfterFirstTurn = emptyBoard.mark(row: row, col: col, withSign: .o)
-            onBoardStateChange(boardAfterFirstTurn)
-            return Turn(player: .x, _mark: { row, col in
-                let boardAfterSecondTurn = boardAfterFirstTurn.mark(row: row, col: col, withSign: .x)
-                onBoardStateChange(boardAfterSecondTurn)
-                return nil
-            })
+            makeMove(currentBoard: emptyBoard, player: .o, row: row, col: col)
+        })
+    }
+    
+    private func makeMove(currentBoard: Board, player: Player, row: Row, col: Col) -> Turn? {
+        let sign: Sign = player == .o ? .o : .x
+        let boardAfterMove = currentBoard.mark(row: row, col: col, withSign: sign)
+        onBoardStateChange(boardAfterMove)
+        return Turn(player: sign == .o ? .x : .o, _mark: { row, col in
+            let nextPlayer: Player = player == .o ? .x : .o
+            return makeMove(currentBoard: boardAfterMove, player: nextPlayer, row: row, col: col)
         })
     }
 }
@@ -80,7 +84,7 @@ final class GameTests: XCTestCase {
         XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterFirstTurn)
     
         
-        _ = turn2?.mark(row: .two, col: .three)
+        let turn3 = turn2?.mark(row: .two, col: .three)
         
         let expectedBoardStateAfterSecondTurn: [[Sign?]] = [
             [.none, .o, .none],
@@ -89,5 +93,15 @@ final class GameTests: XCTestCase {
         ]
         
         XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterSecondTurn)
+        
+        _ = turn3?.mark(row: .three, col: .one)
+
+        let expectedBoardStateAfterThirdTurn: [[Sign?]] = [
+            [.none, .o, .none],
+            [.none, .none, .x],
+            [.o, .none, .none]
+        ]
+        
+        XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterThirdTurn)
     }
 }
