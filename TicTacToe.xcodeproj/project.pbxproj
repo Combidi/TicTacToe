@@ -10,6 +10,7 @@
 		A61E9BF02A866A3400241F0F /* TicTacToe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A61E9BE72A866A3400241F0F /* TicTacToe.framework */; };
 		A61E9BF52A866A3400241F0F /* BoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61E9BF42A866A3400241F0F /* BoardTests.swift */; };
 		A61E9BF62A866A3400241F0F /* TicTacToe.h in Headers */ = {isa = PBXBuildFile; fileRef = A61E9BEA2A866A3400241F0F /* TicTacToe.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A61E9C012A8812EA00241F0F /* GameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61E9C002A8812EA00241F0F /* GameTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,6 +28,7 @@
 		A61E9BEA2A866A3400241F0F /* TicTacToe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TicTacToe.h; sourceTree = "<group>"; };
 		A61E9BEF2A866A3400241F0F /* TicTacToeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TicTacToeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A61E9BF42A866A3400241F0F /* BoardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardTests.swift; sourceTree = "<group>"; };
+		A61E9C002A8812EA00241F0F /* GameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				A61E9BF42A866A3400241F0F /* BoardTests.swift */,
+				A61E9C002A8812EA00241F0F /* GameTests.swift */,
 			);
 			path = TicTacToeTests;
 			sourceTree = "<group>";
@@ -199,6 +202,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A61E9BF52A866A3400241F0F /* BoardTests.swift in Sources */,
+				A61E9C012A8812EA00241F0F /* GameTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
