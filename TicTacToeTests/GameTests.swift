@@ -6,13 +6,14 @@ import XCTest
 
 enum Player {
     case o
+    case x
 }
 
 struct Turn {
     let player: Player
-    let _mark: (Row, Col) -> Void
+    let _mark: (Row, Col) -> Turn?
     
-    func mark(row: Row, col: Col) {
+    func mark(row: Row, col: Col) -> Turn? {
         _mark(row, col)
     }
 }
@@ -29,7 +30,13 @@ struct Game {
         let emptyBoard = Board()
         onBoardStateChange(emptyBoard)
         return Turn(player: .o, _mark: { row, col in
-            onBoardStateChange(emptyBoard.mark(row: row, col: col, withSign: .o))
+            let boardAfterFirstTurn = emptyBoard.mark(row: row, col: col, withSign: .o)
+            onBoardStateChange(boardAfterFirstTurn)
+            return Turn(player: .x, _mark: { row, col in
+                let boardAfterSecondTurn = boardAfterFirstTurn.mark(row: row, col: col, withSign: .x)
+                onBoardStateChange(boardAfterSecondTurn)
+                return nil
+            })
         })
     }
 }
@@ -47,28 +54,40 @@ final class GameTests: XCTestCase {
     func test_startGameNotifiesHandlerWithInitialBoardState() {
         var capturedBoard: Board?
         let game = Game(onBoardStateChange: { capturedBoard = $0 })
-
+        
         XCTAssertNil(capturedBoard)
-
+        
         _ = game.start()
-
+        
         let emptyBoard = Board()
         XCTAssertEqual(capturedBoard?.state, emptyBoard.state)
     }
     
-    func test_takingFirstTurnUpdatesBoard() {
+    func test_takingTurnsUpdatesBoard() {
         var capturedBoard: Board?
         let game = Game(onBoardStateChange: { capturedBoard = $0 })
-        let turn1 = game.start()
-
-        turn1.mark(row: .one, col: .two)
         
-        let expectedBoardState: [[Sign?]] = [
+        let turn1 = game.start()
+        
+        let turn2 = turn1.mark(row: .one, col: .two)
+        
+        let expectedBoardStateAfterFirstTurn: [[Sign?]] = [
             [.none, .o, .none],
             [.none, .none, .none],
             [.none, .none, .none]
         ]
         
-        XCTAssertEqual(capturedBoard?.state, expectedBoardState)
+        XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterFirstTurn)
+    
+        
+        _ = turn2?.mark(row: .two, col: .three)
+        
+        let expectedBoardStateAfterSecondTurn: [[Sign?]] = [
+            [.none, .o, .none],
+            [.none, .none, .x],
+            [.none, .none, .none]
+        ]
+        
+        XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterSecondTurn)
     }
 }
