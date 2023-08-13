@@ -30,8 +30,9 @@ struct Game {
     
     func start(with currentBoard: Board) -> Turn {
         onBoardStateChange(currentBoard)
-        return Turn(player: .o, _mark: { row, col in
-            makeMove(currentBoard: currentBoard, player: .o, row: row, col: col)
+        let startingPlayer = Player.o
+        return Turn(player: startingPlayer, _mark: { row, col in
+            makeMove(currentBoard: currentBoard, player: startingPlayer, row: row, col: col)
         })
     }
     
