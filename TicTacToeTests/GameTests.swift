@@ -11,7 +11,7 @@ enum Player {
 
 struct Turn {
     let player: Player
-    let _mark: (Row, Col) -> Turn?
+    fileprivate let _mark: (Row, Col) -> Turn?
     
     func mark(row: Row, col: Col) -> Turn? {
         _mark(row, col)
