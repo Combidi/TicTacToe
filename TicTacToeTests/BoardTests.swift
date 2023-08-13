@@ -18,14 +18,14 @@ enum Col: Int {
 
 struct Board {
         
-    init() {
-        state = [
+    static func emptyBoard() -> Board {
+        Board(state: [
             [.none, .none, .none],
             [.none, .none, .none],
             [.none, .none, .none]
-        ]
+        ])
     }
-    
+
     private init(state: [[Sign?]]) {
         self.state = state
     }
@@ -42,7 +42,7 @@ struct Board {
 final class BoardTests: XCTestCase {
 
     func test_startsWithEmptyBoard() {
-        XCTAssertEqual(Board().state, [
+        XCTAssertEqual(Board.emptyBoard().state, [
             [.none, .none, .none],
             [.none, .none, .none],
             [.none, .none, .none]
@@ -51,7 +51,7 @@ final class BoardTests: XCTestCase {
     
     func test_markSpotUpdatesState() {
         
-        let board = Board()
+        let board = Board.emptyBoard()
         
         let firstMove = board.mark(row: .one, col: .two, withSign: .x)
      
