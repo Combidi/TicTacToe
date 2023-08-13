@@ -38,7 +38,7 @@ struct Game {
         let sign: Sign = player == .o ? .o : .x
         let boardAfterMove = currentBoard.mark(row: row, col: col, withSign: sign)
         onBoardStateChange(boardAfterMove)
-        return Turn(player: sign == .o ? .x : .o, _mark: { row, col in
+        return Turn(player: player == .o ? .x : .o, _mark: { row, col in
             let nextPlayer: Player = player == .o ? .x : .o
             return makeMove(currentBoard: boardAfterMove, player: nextPlayer, row: row, col: col)
         })
@@ -51,8 +51,23 @@ final class GameTests: XCTestCase {
         let game = Game(onBoardStateChange: { _ in })
         
         let turn1 = game.start()
-        
         XCTAssertEqual(turn1.player, .o)
+    }
+
+    func test_alternatesPlayerForEachTurn() {
+        let game = Game(onBoardStateChange: { _ in })
+        
+        let turn1 = game.start()
+        XCTAssertEqual(turn1.player, .o)
+
+        let turn2 = turn1.mark(row: .one, col: .one)
+        XCTAssertEqual(turn2?.player, .x)
+
+        let turn3 = turn2?.mark(row: .one, col: .two)
+        XCTAssertEqual(turn3?.player, .o)
+
+        let turn4 = turn3?.mark(row: .one, col: .two)
+        XCTAssertEqual(turn4?.player, .x)
     }
     
     func test_startGameNotifiesHandlerWithInitialBoardState() {
