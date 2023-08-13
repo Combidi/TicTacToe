@@ -26,11 +26,10 @@ struct Game {
         self.onBoardStateChange = onBoardStateChange
     }
     
-    func start() -> Turn {
-        let emptyBoard = Board()
-        onBoardStateChange(emptyBoard)
+    func start(with currentBoard: Board) -> Turn {
+        onBoardStateChange(currentBoard)
         return Turn(player: .o, _mark: { row, col in
-            makeMove(currentBoard: emptyBoard, player: .o, row: row, col: col)
+            makeMove(currentBoard: currentBoard, player: .o, row: row, col: col)
         })
     }
     
@@ -50,14 +49,14 @@ final class GameTests: XCTestCase {
     func test_startsGameForPlayerO() {
         let game = Game(onBoardStateChange: { _ in })
         
-        let turn1 = game.start()
+        let turn1 = game.start(with: Board())
         XCTAssertEqual(turn1.player, .o)
     }
 
     func test_alternatesPlayerForEachTurn() {
         let game = Game(onBoardStateChange: { _ in })
         
-        let turn1 = game.start()
+        let turn1 = game.start(with: Board())
         XCTAssertEqual(turn1.player, .o)
 
         let turn2 = turn1.mark(row: .one, col: .one)
@@ -76,7 +75,7 @@ final class GameTests: XCTestCase {
         
         XCTAssertNil(capturedBoard)
         
-        _ = game.start()
+        _ = game.start(with: Board())
         
         let emptyBoard = Board()
         XCTAssertEqual(capturedBoard?.state, emptyBoard.state)
@@ -86,7 +85,7 @@ final class GameTests: XCTestCase {
         var capturedBoard: Board?
         let game = Game(onBoardStateChange: { capturedBoard = $0 })
         
-        let turn1 = game.start()
+        let turn1 = game.start(with: Board())
         
         let turn2 = turn1.mark(row: .one, col: .two)
         
