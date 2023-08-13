@@ -7,6 +7,8 @@ import XCTest
 enum Player {
     case o
     case x
+    
+    fileprivate var sign: Sign { self == .o ? .o : .x }
 }
 
 struct Turn {
@@ -34,8 +36,7 @@ struct Game {
     }
     
     private func makeMove(currentBoard: Board, player: Player, row: Row, col: Col) -> Turn? {
-        let sign: Sign = player == .o ? .o : .x
-        let boardAfterMove = currentBoard.mark(row: row, col: col, withSign: sign)
+        let boardAfterMove = currentBoard.mark(row: row, col: col, withSign: player.sign)
         onBoardStateChange(boardAfterMove)
         return Turn(player: player == .o ? .x : .o, _mark: { row, col in
             let nextPlayer: Player = player == .o ? .x : .o
