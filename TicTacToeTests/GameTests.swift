@@ -34,17 +34,17 @@ struct Game {
         let startingPlayer = Player.o
         return makeTurn(for: startingPlayer, currentBoard: currentBoard)
     }
-    
-    private func makeMove(currentBoard: Board, player: Player, row: Row, col: Col) -> Turn? {
-        let boardAfterMove = currentBoard.mark(row: row, col: col, withSign: player.sign)
-        onBoardStateChange(boardAfterMove)
-        return makeTurn(for: player == .o ? .x : .o, currentBoard: boardAfterMove)
-    }
-    
+        
     private func makeTurn(for player: Player, currentBoard: Board) -> Turn {
         return Turn(player: player, _mark: { row, col in
             makeMove(currentBoard: currentBoard, player: player, row: row, col: col)
         })
+    }
+
+    private func makeMove(currentBoard: Board, player: Player, row: Row, col: Col) -> Turn? {
+        let boardAfterMove = currentBoard.mark(row: row, col: col, withSign: player.sign)
+        onBoardStateChange(boardAfterMove)
+        return makeTurn(for: player == .o ? .x : .o, currentBoard: boardAfterMove)
     }
 }
 
