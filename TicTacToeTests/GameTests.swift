@@ -9,6 +9,7 @@ enum Player {
     case x
     
     fileprivate var sign: Sign { self == .o ? .o : .x }
+    fileprivate var opponent: Player { self == .o ? .x : .o }
 }
 
 struct Turn {
@@ -40,8 +41,7 @@ struct Game {
         let boardAfterMove = currentBoard.mark(row: row, col: col, withSign: player.sign)
         onBoardStateChange(boardAfterMove)
         return Turn(player: player == .o ? .x : .o, _mark: { row, col in
-            let nextPlayer: Player = player == .o ? .x : .o
-            return makeMove(currentBoard: boardAfterMove, player: nextPlayer, row: row, col: col)
+            makeMove(currentBoard: boardAfterMove, player: player.opponent, row: row, col: col)
         })
     }
 }
