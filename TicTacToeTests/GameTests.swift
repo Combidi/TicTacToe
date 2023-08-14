@@ -42,6 +42,7 @@ struct Game {
     }
 
     private func makeMove(currentBoard: Board, player: Player, row: Row, col: Col) -> Turn? {
+        guard currentBoard.state[row.rawValue][col.rawValue] == .none else { return nil }
         let boardAfterMove = currentBoard.mark(row: row, col: col, withSign: player.sign)
         onBoardStateChange(boardAfterMove)
         return makeTurn(for: player.opponent, currentBoard: boardAfterMove)
@@ -121,5 +122,21 @@ final class GameTests: XCTestCase {
         ]
         
         XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterThirdTurn)
+    }
+
+    func test_makingMoveDoesNotOverrideAlreadySignedDoesNotOverrideBoard() {
+        var capturedBoard: Board?
+        let game = Game(onBoardStateChange: { capturedBoard = $0 })
+        _ = game.start(with: .emptyBoard())
+            .mark(row: .one, col: .one)?
+            .mark(row: .one, col: .one)
+        
+        let expectedBoardStateAfterFirstTurn: [[Sign?]] = [
+            [.o, .none, .none],
+            [.none, .none, .none],
+            [.none, .none, .none]
+        ]
+
+        XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterFirstTurn)
     }
 }
