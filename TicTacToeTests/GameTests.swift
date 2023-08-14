@@ -44,7 +44,7 @@ struct Game {
     private func makeMove(currentBoard: Board, player: Player, row: Row, col: Col) -> Turn? {
         let boardAfterMove = currentBoard.mark(row: row, col: col, withSign: player.sign)
         onBoardStateChange(boardAfterMove)
-        return makeTurn(for: player == .o ? .x : .o, currentBoard: boardAfterMove)
+        return makeTurn(for: player.opponent, currentBoard: boardAfterMove)
     }
 }
 
