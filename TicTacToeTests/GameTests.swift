@@ -24,7 +24,7 @@ struct Turn {
 struct Game {
     
     private let onBoardStateChange: (Board) -> Void
-     
+    
     init(onBoardStateChange: @escaping (Board) -> Void) {
         self.onBoardStateChange = onBoardStateChange
     }
@@ -34,13 +34,13 @@ struct Game {
         let startingPlayer = Player.o
         return makeTurn(for: startingPlayer, currentBoard: currentBoard)
     }
-        
+    
     private func makeTurn(for player: Player, currentBoard: Board) -> Turn {
         return Turn(player: player, _mark: { row, col in
             makeMove(currentBoard: currentBoard, player: player, row: row, col: col)
         })
     }
-
+    
     private func makeMove(currentBoard: Board, player: Player, row: Row, col: Col) -> Turn? {
         guard currentBoard.state[row.rawValue][col.rawValue] == .none else { return nil }
         let boardAfterMove = currentBoard.mark(row: row, col: col, withSign: player.sign)
@@ -57,19 +57,19 @@ final class GameTests: XCTestCase {
         let turn1 = game.start(with: .emptyBoard())
         XCTAssertEqual(turn1.player, .o)
     }
-
+    
     func test_alternatesPlayerForEachTurn() {
         let game = Game(onBoardStateChange: { _ in })
         
         let turn1 = game.start(with: .emptyBoard())
         XCTAssertEqual(turn1.player, .o)
-
+        
         let turn2 = turn1.mark(row: .one, col: .one)
         XCTAssertEqual(turn2?.player, .x)
-
+        
         let turn3 = turn2?.mark(row: .one, col: .two)
         XCTAssertEqual(turn3?.player, .o)
-
+        
         let turn4 = turn3?.mark(row: .one, col: .three)
         XCTAssertEqual(turn4?.player, .x)
     }
@@ -101,7 +101,6 @@ final class GameTests: XCTestCase {
         ]
         
         XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterFirstTurn)
-    
         
         let turn3 = turn2?.mark(row: .two, col: .three)
         
@@ -114,7 +113,7 @@ final class GameTests: XCTestCase {
         XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterSecondTurn)
         
         _ = turn3?.mark(row: .three, col: .one)
-
+        
         let expectedBoardStateAfterThirdTurn: [[Sign?]] = [
             [.none, .o, .none],
             [.none, .none, .x],
@@ -123,8 +122,8 @@ final class GameTests: XCTestCase {
         
         XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterThirdTurn)
     }
-
-    func test_makingMoveDoesNotOverrideAlreadySignedDoesNotOverrideBoard() {
+    
+    func test_moveAttemptToSignAnAlreadyTakenSpotOnTheBoard_doesNotOverrideExistingSign() {
         var capturedBoard: Board?
         let game = Game(onBoardStateChange: { capturedBoard = $0 })
         _ = game.start(with: .emptyBoard())
@@ -136,7 +135,7 @@ final class GameTests: XCTestCase {
             [.none, .none, .none],
             [.none, .none, .none]
         ]
-
+        
         XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterFirstTurn)
     }
 }
