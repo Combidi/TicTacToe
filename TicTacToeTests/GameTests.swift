@@ -42,7 +42,9 @@ struct Game {
     }
     
     private func makeMove(currentBoard: Board, player: Player, row: Row, col: Col) -> Turn? {
-        guard currentBoard.state[row.rawValue][col.rawValue] == .none else { return nil }
+        guard currentBoard.state[row.rawValue][col.rawValue] == .none else {
+            return makeTurn(for: player, currentBoard: currentBoard)
+        }
         let boardAfterMove = currentBoard.mark(row: row, col: col, withMark: player.mark)
         onBoardStateChange(boardAfterMove)
         return makeTurn(for: player.opponent, currentBoard: boardAfterMove)
@@ -137,5 +139,17 @@ final class GameTests: XCTestCase {
         ]
         
         XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterFirstTurn)
+    }
+    
+    func test_moveAttemptToMarkAnAlreadyTakenSpotOnTheBoard_doesNotAlternatePlayer() {
+        let game = Game(onBoardStateChange: { _ in })
+        
+        let firstTurn = game.start(with: .emptyBoard())
+        let secondTurn = firstTurn.mark(row: .two, col: .two)
+        let thirdTurn = secondTurn?.mark(row: .two, col: .two)
+        
+        XCTAssertEqual(firstTurn.player, .o)
+        XCTAssertEqual(secondTurn?.player, .x)
+        XCTAssertEqual(thirdTurn?.player, .x)
     }
 }
