@@ -4,7 +4,7 @@
 
 import XCTest
 
-enum Sign {
+enum Mark {
     case x, o
 }
 
@@ -26,15 +26,15 @@ struct Board {
         ])
     }
 
-    private init(state: [[Sign?]]) {
+    private init(state: [[Mark?]]) {
         self.state = state
     }
     
-    let state: [[Sign?]]
+    let state: [[Mark?]]
     
-    func mark(row: Row, col: Col, withSign sign: Sign) -> Board {
+    func mark(row: Row, col: Col, withMark mark: Mark) -> Board {
         var copy = state
-        copy[row.rawValue][col.rawValue] = sign
+        copy[row.rawValue][col.rawValue] = mark
         return Board(state: copy)
     }
 }
@@ -53,9 +53,9 @@ final class BoardTests: XCTestCase {
         
         let board = Board.emptyBoard()
         
-        let firstMove = board.mark(row: .one, col: .two, withSign: .x)
+        let firstMove = board.mark(row: .one, col: .two, withMark: .x)
      
-        let expectedStateAfterFirstMove: [[Sign?]] = [
+        let expectedStateAfterFirstMove: [[Mark?]] = [
             [.none, .x, .none],
             [.none, .none, .none],
             [.none, .none, .none]
@@ -63,9 +63,9 @@ final class BoardTests: XCTestCase {
         
         XCTAssertEqual(firstMove.state, expectedStateAfterFirstMove)
         
-        let secondMove = firstMove.mark(row: .two, col: .one, withSign: .o)
+        let secondMove = firstMove.mark(row: .two, col: .one, withMark: .o)
 
-        let expectedStateAfterSecondMove: [[Sign?]] = [
+        let expectedStateAfterSecondMove: [[Mark?]] = [
             [.none, .x, .none],
             [.o, .none, .none],
             [.none, .none, .none]
@@ -73,9 +73,9 @@ final class BoardTests: XCTestCase {
 
         XCTAssertEqual(secondMove.state, expectedStateAfterSecondMove)
         
-        let thirdMove = secondMove.mark(row: .three, col: .three, withSign: .x)
+        let thirdMove = secondMove.mark(row: .three, col: .three, withMark: .x)
         
-        let expectedStateAfterThirdMove: [[Sign?]] = [
+        let expectedStateAfterThirdMove: [[Mark?]] = [
             [.none, .x, .none],
             [.o, .none, .none],
             [.none, .none, .x]

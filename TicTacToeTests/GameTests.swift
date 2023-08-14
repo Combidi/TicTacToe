@@ -8,7 +8,7 @@ enum Player {
     case o
     case x
     
-    fileprivate var sign: Sign { self == .o ? .o : .x }
+    fileprivate var mark: Mark { self == .o ? .o : .x }
     fileprivate var opponent: Player { self == .o ? .x : .o }
 }
 
@@ -43,7 +43,7 @@ struct Game {
     
     private func makeMove(currentBoard: Board, player: Player, row: Row, col: Col) -> Turn? {
         guard currentBoard.state[row.rawValue][col.rawValue] == .none else { return nil }
-        let boardAfterMove = currentBoard.mark(row: row, col: col, withSign: player.sign)
+        let boardAfterMove = currentBoard.mark(row: row, col: col, withMark: player.mark)
         onBoardStateChange(boardAfterMove)
         return makeTurn(for: player.opponent, currentBoard: boardAfterMove)
     }
@@ -94,7 +94,7 @@ final class GameTests: XCTestCase {
         
         let turn2 = turn1.mark(row: .one, col: .two)
         
-        let expectedBoardStateAfterFirstTurn: [[Sign?]] = [
+        let expectedBoardStateAfterFirstTurn: [[Mark?]] = [
             [.none, .o, .none],
             [.none, .none, .none],
             [.none, .none, .none]
@@ -104,7 +104,7 @@ final class GameTests: XCTestCase {
         
         let turn3 = turn2?.mark(row: .two, col: .three)
         
-        let expectedBoardStateAfterSecondTurn: [[Sign?]] = [
+        let expectedBoardStateAfterSecondTurn: [[Mark?]] = [
             [.none, .o, .none],
             [.none, .none, .x],
             [.none, .none, .none]
@@ -114,7 +114,7 @@ final class GameTests: XCTestCase {
         
         _ = turn3?.mark(row: .three, col: .one)
         
-        let expectedBoardStateAfterThirdTurn: [[Sign?]] = [
+        let expectedBoardStateAfterThirdTurn: [[Mark?]] = [
             [.none, .o, .none],
             [.none, .none, .x],
             [.o, .none, .none]
@@ -123,14 +123,14 @@ final class GameTests: XCTestCase {
         XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterThirdTurn)
     }
     
-    func test_moveAttemptToSignAnAlreadyTakenSpotOnTheBoard_doesNotOverrideExistingSign() {
+    func test_moveAttemptToMarkAnAlreadyTakenSpotOnTheBoard_doesNotOverrideExistingMark() {
         var capturedBoard: Board?
         let game = Game(onBoardStateChange: { capturedBoard = $0 })
         _ = game.start(with: .emptyBoard())
             .mark(row: .one, col: .one)?
             .mark(row: .one, col: .one)
         
-        let expectedBoardStateAfterFirstTurn: [[Sign?]] = [
+        let expectedBoardStateAfterFirstTurn: [[Mark?]] = [
             [.o, .none, .none],
             [.none, .none, .none],
             [.none, .none, .none]
