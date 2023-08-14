@@ -69,7 +69,7 @@ final class GameTests: XCTestCase {
         let turn3 = turn2?.mark(row: .one, col: .two)
         XCTAssertEqual(turn3?.player, .o)
 
-        let turn4 = turn3?.mark(row: .one, col: .two)
+        let turn4 = turn3?.mark(row: .one, col: .three)
         XCTAssertEqual(turn4?.player, .x)
     }
     
