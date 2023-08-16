@@ -58,31 +58,32 @@ struct Game {
 
 final class GameTests: XCTestCase {
     
-    func test_startsGameForPlayerO() {
-        var currentTurn: Turn?
-        let game = makeSUT(onNextTurn: { currentTurn = $0 })
+    func test_startsGameForPlayerO() throws {
+        var capturedTurns = [Turn]()
+        let game = makeSUT(onNextTurn: { capturedTurns.append($0) })
     
         game.start(with: .emptyBoard())
         
-        XCTAssertEqual(currentTurn?.player, .o)
+        let firstTurn = try XCTUnwrap(capturedTurns.first)
+        XCTAssertEqual(firstTurn.player, .o)
     }
     
     func test_alternatesPlayerForEachTurn() {
-        var currentTurn: Turn?
-        let game = makeSUT(onNextTurn: { currentTurn = $0 })
+        var capturedTurns = [Turn]()
+        let game = makeSUT(onNextTurn: { capturedTurns.append($0) })
         game.start(with: .emptyBoard())
         
-        XCTAssertEqual(currentTurn?.player, .o)
+        XCTAssertEqual(capturedTurns[0].player, .o)
 
-        currentTurn?.mark(row: .one, col: .one)
+        capturedTurns[0].mark(row: .one, col: .one)
         
-        XCTAssertEqual(currentTurn?.player, .x)
+        XCTAssertEqual(capturedTurns[1].player, .x)
 
-        currentTurn?.mark(row: .one, col: .two)
+        capturedTurns[1].mark(row: .one, col: .two)
 
-        XCTAssertEqual(currentTurn?.player, .o)
+        XCTAssertEqual(capturedTurns[2].player, .o)
 
-        currentTurn?.mark(row: .one, col: .three)
+        capturedTurns[2].mark(row: .one, col: .three)
     }
     
     func test_startGameNotifiesHandlerWithInitialBoardState() {
@@ -99,14 +100,14 @@ final class GameTests: XCTestCase {
     
     func test_takingTurnsUpdatesBoard() {
         var capturedBoard: Board?
-        var currentTurn: Turn?
+        var capturedTurns = [Turn]()
         let game = makeSUT(
             onBoardStateChange: { capturedBoard = $0 },
-            onNextTurn: { currentTurn = $0 }
+            onNextTurn: { capturedTurns.append($0) }
         )
         game.start(with: .emptyBoard())
         
-        currentTurn?.mark(row: .one, col: .two)
+        capturedTurns[0].mark(row: .one, col: .two)
         
         let expectedBoardStateAfterFirstTurn: [[Mark?]] = [
             [.none, .o, .none],
@@ -116,7 +117,7 @@ final class GameTests: XCTestCase {
         
         XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterFirstTurn)
         
-        currentTurn?.mark(row: .two, col: .three)
+        capturedTurns[1].mark(row: .two, col: .three)
         
         let expectedBoardStateAfterSecondTurn: [[Mark?]] = [
             [.none, .o, .none],
@@ -126,7 +127,7 @@ final class GameTests: XCTestCase {
         
         XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterSecondTurn)
         
-        currentTurn?.mark(row: .three, col: .one)
+        capturedTurns[2].mark(row: .three, col: .one)
         
         let expectedBoardStateAfterThirdTurn: [[Mark?]] = [
             [.none, .o, .none],
@@ -139,16 +140,16 @@ final class GameTests: XCTestCase {
     
     func test_moveAttemptToMarkAnAlreadyTakenSpotOnTheBoard_doesNotOverrideExistingMark() {
         var capturedBoard: Board?
-        var currentTurn: Turn?
+        var capturedTurns = [Turn]()
         let game = makeSUT(
             onBoardStateChange: { capturedBoard = $0 },
-            onNextTurn: { currentTurn = $0 }
+            onNextTurn: { capturedTurns.append($0) }
         )
         game.start(with: .emptyBoard())
         
-        currentTurn?.mark(row: .one, col: .one)
-        currentTurn?.mark(row: .one, col: .one)
-        
+        capturedTurns[0].mark(row: .one, col: .one)
+        capturedTurns[1].mark(row: .one, col: .one)
+
         let expectedBoardStateAfterFirstTurn: [[Mark?]] = [
             [.o, .none, .none],
             [.none, .none, .none],
@@ -159,16 +160,18 @@ final class GameTests: XCTestCase {
     }
     
     func test_moveAttemptToMarkAnAlreadyTakenSpotOnTheBoard_doesNotAlternatePlayer() {
-        var currentTurn: Turn?
-        let game = makeSUT(onNextTurn: { currentTurn = $0 })
+        var capturedTurns = [Turn]()
+        let game = makeSUT(onNextTurn: { capturedTurns.append($0) })
         game.start(with: .emptyBoard())
-        XCTAssertEqual(currentTurn?.player, .o)
+        XCTAssertEqual(capturedTurns[0].player, .o)
 
-        currentTurn?.mark(row: .two, col: .two)
-        XCTAssertEqual(currentTurn?.player, .x)
+        capturedTurns[0].mark(row: .two, col: .two)
+        
+        XCTAssertEqual(capturedTurns[1].player, .x)
 
-        currentTurn?.mark(row: .two, col: .two)
-        XCTAssertEqual(currentTurn?.player, .x)
+        capturedTurns[1].mark(row: .two, col: .two)
+        
+        XCTAssertEqual(capturedTurns[2].player, .x)
     }
 
     // MARK: - Helpers
