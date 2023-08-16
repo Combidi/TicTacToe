@@ -39,7 +39,7 @@ struct Game {
     }
     
     private func makeTurn(for player: Player, currentBoard: Board) -> Turn {
-        return Turn(player: player, _mark: { row, col in
+        Turn(player: player, _mark: { row, col in
             makeMove(currentBoard: currentBoard, player: player, row: row, col: col)
         })
     }
