@@ -21,6 +21,12 @@ struct Turn {
     }
 }
 
+private extension Board {
+    func spotIsNotMarked(row: Row, col: Col) -> Bool {
+        state[row.rawValue][col.rawValue] == .none
+    }
+}
+
 struct Game {
     
     private let onBoardStateChange: (Board) -> Void
@@ -45,7 +51,7 @@ struct Game {
     }
     
     private func makeMove(currentBoard: Board, player: Player, row: Row, col: Col) {
-        guard currentBoard.state[row.rawValue][col.rawValue] == .none else {
+        guard currentBoard.spotIsNotMarked(row: row, col: col) else {
             let retry = makeTurn(for: player, currentBoard: currentBoard)
             return onNextTurn(retry)
         }
