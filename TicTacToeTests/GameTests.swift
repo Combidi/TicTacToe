@@ -31,10 +31,16 @@ struct Game {
     
     private let onBoardStateChange: (Board) -> Void
     private let onNextTurn: (Turn) -> Void
+    private let didEndWithWinner: (Player) -> Void
     
-    init(onBoardStateChange: @escaping (Board) -> Void, onNextTurn: @escaping (Turn) -> Void) {
+    init(
+        onBoardStateChange: @escaping (Board) -> Void,
+        onNextTurn: @escaping (Turn) -> Void,
+        didEndWithWinner: @escaping (Player) -> Void
+    ) {
         self.onBoardStateChange = onBoardStateChange
         self.onNextTurn = onNextTurn
+        self.didEndWithWinner = didEndWithWinner
     }
     
     func start(with currentBoard: Board) {
@@ -57,6 +63,13 @@ struct Game {
         }
         let boardAfterMove = currentBoard.mark(row: row, col: col, withMark: player.mark)
         onBoardStateChange(boardAfterMove)
+        if boardAfterMove.state == [
+            [.o, .o, .o],
+            [.x, .x, .none],
+            [.none, .none, .none]
+        ] {
+            didEndWithWinner(.x)
+        }
         let nextTurn = makeTurn(for: player.opponent, currentBoard: boardAfterMove)
         onNextTurn(nextTurn)
     }
@@ -179,13 +192,49 @@ final class GameTests: XCTestCase {
         
         XCTAssertEqual(capturedTurns[2].player, .x)
     }
+    
+    func test_makingWinningMoveEndsGameWithWinningPlayer() {
+        var capturedTurns = [Turn]()
+        var capturedWinner: Player?
+        let game = makeSUT(
+            onNextTurn: { capturedTurns.append($0) },
+            didEndWithWinner: { capturedWinner = $0 }
+        )
+        game.start(with: .emptyBoard())
+        XCTAssertEqual(capturedTurns[0].player, .o)
+
+        capturedTurns[0].mark(row: .one, col: .one)
+
+        XCTAssertNil(capturedWinner)
+        
+        capturedTurns[1].mark(row: .two, col: .one)
+        
+        XCTAssertNil(capturedWinner)
+        
+        capturedTurns[2].mark(row: .one, col: .two)
+
+        XCTAssertNil(capturedWinner)
+        
+        capturedTurns[3].mark(row: .two, col: .two)
+        
+        XCTAssertNil(capturedWinner)
+
+        capturedTurns[4].mark(row: .one, col: .three)
+        
+        XCTAssertEqual(capturedWinner, .x)
+    }
 
     // MARK: - Helpers
     
     private func makeSUT(
         onBoardStateChange: @escaping (Board) -> Void = { _ in },
-        onNextTurn: @escaping (Turn) -> Void = { _ in }
+        onNextTurn: @escaping (Turn) -> Void = { _ in },
+        didEndWithWinner: @escaping (Player) -> Void = { _ in }
     ) -> Game {
-        Game(onBoardStateChange: onBoardStateChange, onNextTurn: onNextTurn)
+        Game(
+            onBoardStateChange: onBoardStateChange,
+            onNextTurn: onNextTurn,
+            didEndWithWinner: didEndWithWinner
+        )
     }
 }
