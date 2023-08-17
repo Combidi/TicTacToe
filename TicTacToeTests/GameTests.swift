@@ -14,15 +14,15 @@ enum Player {
 
 struct Turn {
     let player: Player
-    fileprivate let _mark: (Row, Col) -> Void
+    fileprivate let _mark: (Row, Index) -> Void
     
-    func mark(row: Row, col: Col) {
+    func mark(row: Row, col: Index) {
         _mark(row, col)
     }
 }
 
 private extension Board {
-    func spotIsNotMarked(row: Row, col: Col) -> Bool {
+    func spotIsNotMarked(row: Row, col: Index) -> Bool {
         state[row.rawValue][col.rawValue] == .none
     }
 }
@@ -56,7 +56,7 @@ struct Game {
         })
     }
     
-    private func makeMove(currentBoard: Board, player: Player, row: Row, col: Col) {
+    private func makeMove(currentBoard: Board, player: Player, row: Row, col: Index) {
         guard currentBoard.spotIsNotMarked(row: row, col: col) else {
             let retry = makeTurn(for: player, currentBoard: currentBoard)
             return onNextTurn(retry)
