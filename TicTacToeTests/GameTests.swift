@@ -14,16 +14,16 @@ enum Player {
 
 struct Turn {
     let player: Player
-    fileprivate let _mark: (Row, Index) -> Void
-    
-    func mark(row: Row, col: Index) {
-        _mark(row, col)
+    fileprivate let _mark: (Spot) -> Void
+        
+    func mark(spot: Spot) {
+        _mark(spot)
     }
 }
 
 private extension Board {
-    func spotIsNotMarked(row: Row, col: Index) -> Bool {
-        state[row.rawValue][col.rawValue] == .none
+    func spotIsNotMarked(_ spot: Spot) -> Bool {
+        state[spot.row.rawValue][spot.index.rawValue] == .none
     }
 }
 
@@ -51,17 +51,20 @@ struct Game {
     }
     
     private func makeTurn(for player: Player, currentBoard: Board) -> Turn {
-        Turn(player: player, _mark: { row, col in
-            makeMove(currentBoard: currentBoard, player: player, row: row, col: col)
+        Turn(player: player, _mark: { spot in
+            makeMove(forPlayer: player, attemptingToMark: spot, onCurrentBoard: currentBoard)
         })
     }
     
-    private func makeMove(currentBoard: Board, player: Player, row: Row, col: Index) {
-        guard currentBoard.spotIsNotMarked(row: row, col: col) else {
+    private func makeMove(
+        forPlayer player: Player,
+        attemptingToMark spot: Spot,
+        onCurrentBoard currentBoard: Board
+    ) {
+        guard currentBoard.spotIsNotMarked(spot) else {
             let retry = makeTurn(for: player, currentBoard: currentBoard)
             return onNextTurn(retry)
         }
-        let spot = Spot(row: row, index: col)
         let boardAfterMove = currentBoard.mark(spot, with: player.mark)
         onBoardStateChange(boardAfterMove)
         if boardAfterMove.state == [
@@ -253,5 +256,11 @@ final class GameTests: XCTestCase {
             onNextTurn: onNextTurn,
             didEndWithWinner: didEndWithWinner
         )
+    }
+}
+
+private extension Turn {
+    func mark(row: Row, col: Index) {
+        _mark(Spot(row: row, index: col))
     }
 }
