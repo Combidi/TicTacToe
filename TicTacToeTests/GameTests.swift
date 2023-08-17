@@ -61,7 +61,8 @@ struct Game {
             let retry = makeTurn(for: player, currentBoard: currentBoard)
             return onNextTurn(retry)
         }
-        let boardAfterMove = currentBoard.mark(row: row, col: col, withMark: player.mark)
+        let spot = Spot(row: row, index: col)
+        let boardAfterMove = currentBoard.mark(spot, with: player.mark)
         onBoardStateChange(boardAfterMove)
         if boardAfterMove.state == [
             [.o, .o, .o],

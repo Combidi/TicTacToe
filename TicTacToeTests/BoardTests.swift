@@ -16,6 +16,11 @@ enum Index: Int {
     case one = 0, two, three
 }
 
+struct Spot {
+    let row: Row
+    let index: Index
+}
+
 struct Board {
         
     static func emptyBoard() -> Board {
@@ -32,9 +37,9 @@ struct Board {
     
     let state: [[Mark?]]
     
-    func mark(row: Row, index: Index, withMark mark: Mark) -> Board {
+    func mark(_ spot: Spot, with mark: Mark) -> Board {
         var copy = state
-        copy[row.rawValue][index.rawValue] = mark
+        copy[spot.row.rawValue][spot.index.rawValue] = mark
         return Board(state: copy)
     }
 }
@@ -53,7 +58,7 @@ final class BoardTests: XCTestCase {
         
         let board = Board.emptyBoard()
         
-        let firstMove = board.mark(row: .one, index: .two, withMark: .x)
+        let firstMove = board.mark(Spot(row: .one, index: .two), with: .x)
      
         let expectedStateAfterFirstMove: [[Mark?]] = [
             [.none, .x, .none],
@@ -63,7 +68,7 @@ final class BoardTests: XCTestCase {
         
         XCTAssertEqual(firstMove.state, expectedStateAfterFirstMove)
         
-        let secondMove = firstMove.mark(row: .two, index: .one, withMark: .o)
+        let secondMove = firstMove.mark(Spot(row: .two, index: .one), with: .o)
 
         let expectedStateAfterSecondMove: [[Mark?]] = [
             [.none, .x, .none],
@@ -73,7 +78,7 @@ final class BoardTests: XCTestCase {
 
         XCTAssertEqual(secondMove.state, expectedStateAfterSecondMove)
         
-        let thirdMove = secondMove.mark(row: .three, index: .three, withMark: .x)
+        let thirdMove = secondMove.mark(Spot(row: .three, index: .three), with: .x)
         
         let expectedStateAfterThirdMove: [[Mark?]] = [
             [.none, .x, .none],
