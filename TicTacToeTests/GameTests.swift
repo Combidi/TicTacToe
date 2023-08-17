@@ -16,7 +16,7 @@ struct Turn {
     let player: Player
     fileprivate let _mark: (Spot) -> Void
         
-    func mark(spot: Spot) {
+    func mark(_ spot: Spot) {
         _mark(spot)
     }
 }
@@ -98,15 +98,15 @@ final class GameTests: XCTestCase {
         
         XCTAssertEqual(capturedTurns[0].player, .o)
 
-        capturedTurns[0].mark(row: .one, col: .one)
+        capturedTurns[0].mark(Spot(row: .one, index: .one))
         
         XCTAssertEqual(capturedTurns[1].player, .x)
 
-        capturedTurns[1].mark(row: .one, col: .two)
+        capturedTurns[1].mark(Spot(row: .one, index: .two))
 
         XCTAssertEqual(capturedTurns[2].player, .o)
 
-        capturedTurns[2].mark(row: .one, col: .three)
+        capturedTurns[2].mark(Spot(row: .one, index: .three))
     }
     
     func test_startGameNotifiesHandlerWithInitialBoardState() {
@@ -130,7 +130,7 @@ final class GameTests: XCTestCase {
         )
         game.start(with: .emptyBoard())
         
-        capturedTurns[0].mark(row: .one, col: .two)
+        capturedTurns[0].mark(Spot(row: .one, index: .two))
         
         let expectedBoardStateAfterFirstTurn: [[Mark?]] = [
             [.none, .o, .none],
@@ -140,7 +140,7 @@ final class GameTests: XCTestCase {
         
         XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterFirstTurn)
         
-        capturedTurns[1].mark(row: .two, col: .three)
+        capturedTurns[1].mark(Spot(row: .two, index: .three))
         
         let expectedBoardStateAfterSecondTurn: [[Mark?]] = [
             [.none, .o, .none],
@@ -150,7 +150,7 @@ final class GameTests: XCTestCase {
         
         XCTAssertEqual(capturedBoard?.state, expectedBoardStateAfterSecondTurn)
         
-        capturedTurns[2].mark(row: .three, col: .one)
+        capturedTurns[2].mark(Spot(row: .three, index: .one))
         
         let expectedBoardStateAfterThirdTurn: [[Mark?]] = [
             [.none, .o, .none],
@@ -170,8 +170,8 @@ final class GameTests: XCTestCase {
         )
         game.start(with: .emptyBoard())
         
-        capturedTurns[0].mark(row: .one, col: .one)
-        capturedTurns[1].mark(row: .one, col: .one)
+        capturedTurns[0].mark(Spot(row: .one, index: .one))
+        capturedTurns[1].mark(Spot(row: .one, index: .one))
 
         let expectedBoardStateAfterFirstTurn: [[Mark?]] = [
             [.o, .none, .none],
@@ -188,11 +188,11 @@ final class GameTests: XCTestCase {
         game.start(with: .emptyBoard())
         XCTAssertEqual(capturedTurns[0].player, .o)
 
-        capturedTurns[0].mark(row: .two, col: .two)
+        capturedTurns[0].mark(Spot(row: .two, index: .two))
         
         XCTAssertEqual(capturedTurns[1].player, .x)
 
-        capturedTurns[1].mark(row: .two, col: .two)
+        capturedTurns[1].mark(Spot(row: .two, index: .two))
         
         XCTAssertEqual(capturedTurns[2].player, .x)
     }
@@ -207,23 +207,23 @@ final class GameTests: XCTestCase {
         game.start(with: .emptyBoard())
         XCTAssertEqual(capturedTurns[0].player, .o)
 
-        capturedTurns[0].mark(row: .one, col: .one)
+        capturedTurns[0].mark(Spot(row: .one, index: .one))
 
         XCTAssertNil(capturedWinner)
         
-        capturedTurns[1].mark(row: .two, col: .one)
+        capturedTurns[1].mark(Spot(row: .two, index: .one))
         
         XCTAssertNil(capturedWinner)
         
-        capturedTurns[2].mark(row: .one, col: .two)
+        capturedTurns[2].mark(Spot(row: .one, index: .two))
 
         XCTAssertNil(capturedWinner)
         
-        capturedTurns[3].mark(row: .two, col: .two)
+        capturedTurns[3].mark(Spot(row: .two, index: .two))
         
         XCTAssertNil(capturedWinner)
 
-        capturedTurns[4].mark(row: .one, col: .three)
+        capturedTurns[4].mark(Spot(row: .one, index: .three))
         
         XCTAssertEqual(capturedWinner, .x)
     }
@@ -235,11 +235,11 @@ final class GameTests: XCTestCase {
         )
         game.start(with: .emptyBoard())
 
-        capturedTurns[0].mark(row: .one, col: .one)
-        capturedTurns[1].mark(row: .two, col: .one)
-        capturedTurns[2].mark(row: .one, col: .two)
-        capturedTurns[3].mark(row: .two, col: .two)
-        capturedTurns[4].mark(row: .one, col: .three)
+        capturedTurns[0].mark(Spot(row: .one, index: .one))
+        capturedTurns[1].mark(Spot(row: .two, index: .one))
+        capturedTurns[2].mark(Spot(row: .one, index: .two))
+        capturedTurns[3].mark(Spot(row: .two, index: .two))
+        capturedTurns[4].mark(Spot(row: .one, index: .three))
         
         XCTAssertEqual(capturedTurns.count, 5)
     }
@@ -256,11 +256,5 @@ final class GameTests: XCTestCase {
             onNextTurn: onNextTurn,
             didEndWithWinner: didEndWithWinner
         )
-    }
-}
-
-private extension Turn {
-    func mark(row: Row, col: Index) {
-        _mark(Spot(row: row, index: col))
     }
 }
