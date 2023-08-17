@@ -68,7 +68,7 @@ struct Game {
             [.x, .x, .none],
             [.none, .none, .none]
         ] {
-            didEndWithWinner(.x)
+            return didEndWithWinner(.x)
         }
         let nextTurn = makeTurn(for: player.opponent, currentBoard: boardAfterMove)
         onNextTurn(nextTurn)
@@ -222,6 +222,22 @@ final class GameTests: XCTestCase {
         capturedTurns[4].mark(row: .one, col: .three)
         
         XCTAssertEqual(capturedWinner, .x)
+    }
+    
+    func test_makingWinningMoveDoesNotNotifyHandlerWithNextTurn() {
+        var capturedTurns = [Turn]()
+        let game = makeSUT(
+            onNextTurn: { capturedTurns.append($0) }
+        )
+        game.start(with: .emptyBoard())
+
+        capturedTurns[0].mark(row: .one, col: .one)
+        capturedTurns[1].mark(row: .two, col: .one)
+        capturedTurns[2].mark(row: .one, col: .two)
+        capturedTurns[3].mark(row: .two, col: .two)
+        capturedTurns[4].mark(row: .one, col: .three)
+        
+        XCTAssertEqual(capturedTurns.count, 5)
     }
 
     // MARK: - Helpers
