@@ -81,7 +81,7 @@ struct Game {
 
 final class GameTests: XCTestCase {
     
-    func test_startsGameForPlayerO() throws {
+    func test_startWithEmptyBoard_startsGameForPlayerO() throws {
         var capturedTurns = [Turn]()
         let game = makeSUT(onNextTurn: { capturedTurns.append($0) })
     
