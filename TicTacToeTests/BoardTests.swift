@@ -31,7 +31,7 @@ struct Board {
         ])
     }
 
-    private init(state: [[Mark?]]) {
+    init(state: [[Mark?]]) {
         self.state = state
     }
     

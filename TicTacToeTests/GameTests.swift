@@ -44,8 +44,28 @@ struct Game {
     }
     
     func start(with currentBoard: Board) {
+        var markCountForPlayerX = 0
+        var markCountForPlayerO = 0
+        
+        currentBoard.state
+            .flatMap { $0 }
+            .compactMap { $0 }
+            .forEach {
+                switch $0 {
+                case .o: markCountForPlayerO += 1
+                case .x: markCountForPlayerX += 1
+                }
+            }
+        
         onBoardStateChange(currentBoard)
-        let startingPlayer = Player.o
+        let startingPlayer: Player
+        
+        if markCountForPlayerX < markCountForPlayerO {
+            startingPlayer = .x
+        } else {
+            startingPlayer = .o
+        }
+        
         let nextTurn = makeTurn(for: startingPlayer, currentBoard: currentBoard)
         onNextTurn(nextTurn)
     }
@@ -89,6 +109,25 @@ final class GameTests: XCTestCase {
         
         let firstTurn = try XCTUnwrap(capturedTurns.first)
         XCTAssertEqual(firstTurn.player, .o)
+    }
+    
+    func test_startGameWithNonEmptyBoard_resumesGameForCorrectPlayer() throws {
+        let samples: [(nonEmptyBoard: Board, expectedPlayerOnTurn: Player)] = [
+            (Board(state: [[.o, .none, .none], [.none, .none, .none], [.none, .none, .none]]), .x),
+            (Board(state: [[.o, .x, .none], [.none, .none, .none], [.none, .none, .none]]), .o),
+            (Board(state: [[.none, .none, .none], [.none, .x, .none], [.o, .none, .x]]), .o),
+            (Board(state: [[.none, .o, .none], [.none, .x, .o], [.o, .none, .x]]), .x)
+        ]
+        
+        try samples.enumerated().forEach { index, sample in
+            var capturedTurns = [Turn]()
+            let game = makeSUT(onNextTurn: { capturedTurns.append($0) })
+            
+            game.start(with: sample.nonEmptyBoard)
+            
+            let firstTurn = try XCTUnwrap(capturedTurns.first, "for sample at index: \(index)")
+            XCTAssertEqual(firstTurn.player, sample.expectedPlayerOnTurn, "for sample at index: \(index)")
+        }
     }
     
     func test_alternatesPlayerForEachTurn() {
