@@ -52,14 +52,7 @@ struct Game {
     }
     
     private func determineNextPlayer(for currentBoard: Board) -> Player {
-        let markCountForPlayerX = currentBoard.numberOfSpotsMarkedWith(.x)
-        let markCountForPlayerO = currentBoard.numberOfSpotsMarkedWith(.o)
-                
-        if markCountForPlayerX < markCountForPlayerO {
-            return .x
-        } else {
-            return .o
-        }
+        currentBoard.numberOfSpotsMarkedWith(.x) < currentBoard.numberOfSpotsMarkedWith(.o) ? .x : .o
     }
     
     func start(with currentBoard: Board) {
