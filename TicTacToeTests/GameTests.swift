@@ -27,10 +27,11 @@ private extension Board {
     }
     
     func numberOfSpotsMarkedWith(_ mark: Mark) -> Int {
-        var numberOfOccurrence = 0
-        let flatten = state.flatMap { $0 }
-        flatten.forEach { if $0 == mark { numberOfOccurrence += 1 } }
-        return numberOfOccurrence
+        state
+            .flatMap { $0 }
+            .compactMap { $0 }
+            .filter { $0 == mark }
+            .count
     }
 }
 
