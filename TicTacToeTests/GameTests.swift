@@ -43,7 +43,7 @@ struct Game {
         self.didEndWithWinner = didEndWithWinner
     }
     
-    func start(with currentBoard: Board) {
+    private func determineNextPlayer(for currentBoard: Board) -> Player {
         var markCountForPlayerX = 0
         var markCountForPlayerO = 0
         
@@ -57,15 +57,16 @@ struct Game {
                 }
             }
         
-        onBoardStateChange(currentBoard)
-        let startingPlayer: Player
-        
         if markCountForPlayerX < markCountForPlayerO {
-            startingPlayer = .x
+            return .x
         } else {
-            startingPlayer = .o
+            return .o
         }
-        
+    }
+    
+    func start(with currentBoard: Board) {
+        onBoardStateChange(currentBoard)
+        let startingPlayer = determineNextPlayer(for: currentBoard)
         let nextTurn = makeTurn(for: startingPlayer, currentBoard: currentBoard)
         onNextTurn(nextTurn)
     }
