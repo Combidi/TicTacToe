@@ -25,6 +25,13 @@ private extension Board {
     func spotIsNotMarked(_ spot: Spot) -> Bool {
         state[spot.row.rawValue][spot.index.rawValue] == .none
     }
+    
+    func numberOfSpotsMarkedWith(_ mark: Mark) -> Int {
+        var numberOfOccurrence = 0
+        let flatten = state.flatMap { $0 }
+        flatten.forEach { if $0 == mark { numberOfOccurrence += 1 } }
+        return numberOfOccurrence
+    }
 }
 
 struct Game {
@@ -44,19 +51,9 @@ struct Game {
     }
     
     private func determineNextPlayer(for currentBoard: Board) -> Player {
-        var markCountForPlayerX = 0
-        var markCountForPlayerO = 0
-        
-        currentBoard.state
-            .flatMap { $0 }
-            .compactMap { $0 }
-            .forEach {
-                switch $0 {
-                case .o: markCountForPlayerO += 1
-                case .x: markCountForPlayerX += 1
-                }
-            }
-        
+        let markCountForPlayerX = currentBoard.numberOfSpotsMarkedWith(.x)
+        let markCountForPlayerO = currentBoard.numberOfSpotsMarkedWith(.o)
+                
         if markCountForPlayerX < markCountForPlayerO {
             return .x
         } else {
