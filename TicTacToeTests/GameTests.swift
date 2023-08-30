@@ -84,7 +84,7 @@ struct Game {
             [.x, .x, .none],
             [.none, .none, .none]
         ] {
-            return didEndWithWinner(.x)
+            return didEndWithWinner(.o)
         }
         let nextTurn = makeTurn(for: player.opponent, currentBoard: boardAfterMove)
         onNextTurn(nextTurn)
@@ -256,7 +256,7 @@ final class GameTests: XCTestCase {
 
         capturedTurns[4].mark(Spot(row: .one, index: .three))
         
-        XCTAssertEqual(capturedWinner, .x)
+        XCTAssertEqual(capturedWinner, .o)
     }
     
     func test_makingWinningMoveDoesNotNotifyHandlerWithNextTurn() {
