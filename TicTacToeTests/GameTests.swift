@@ -51,10 +51,6 @@ struct Game {
         self.didEndWithWinner = didEndWithWinner
     }
     
-    private func determineNextPlayer(for currentBoard: Board) -> Player {
-        currentBoard.numberOfSpotsMarkedWith(.x) < currentBoard.numberOfSpotsMarkedWith(.o) ? .x : .o
-    }
-    
     func start(with currentBoard: Board) {
         onBoardStateChange(currentBoard)
         let startingPlayer = determineNextPlayer(for: currentBoard)
@@ -62,6 +58,10 @@ struct Game {
         onNextTurn(nextTurn)
     }
     
+    private func determineNextPlayer(for currentBoard: Board) -> Player {
+        currentBoard.numberOfSpotsMarkedWith(.x) < currentBoard.numberOfSpotsMarkedWith(.o) ? .x : .o
+    }
+
     private func makeTurn(for player: Player, currentBoard: Board) -> Turn {
         Turn(player: player, _mark: { spot in
             makeMove(forPlayer: player, attemptingToMark: spot, onCurrentBoard: currentBoard)
